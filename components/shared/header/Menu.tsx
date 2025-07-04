@@ -10,6 +10,9 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 
+import { auth } from '@/auth'
+import UserButton from './UserButton'
+
 export default function Menu() {
   return (
     <div className='flex justify-end gap-3'>
@@ -21,12 +24,7 @@ export default function Menu() {
             Cart
           </Link>
         </Button>
-        <Button asChild variant={'default'}>
-          <Link href={'/sign-in'}>
-            <ShoppingCart />
-            Sign In
-          </Link>
-        </Button>
+        <UserButton />
       </nav>
       <nav className='md:hidden'>
         <Sheet>
@@ -43,12 +41,7 @@ export default function Menu() {
                 Cart
               </Link>
             </Button>
-            <Button asChild variant={'default'}>
-              <Link href={'/sign-in'}>
-                <ShoppingCart />
-                Sign In
-              </Link>
-            </Button>
+            <UserButton />
           </SheetContent>
         </Sheet>
       </nav>

@@ -13,8 +13,8 @@ export async function getLatestProductsAction() {
     take: LATEST_PRODUCTS_LIMIT,
     orderBy: { createdAt: 'desc' },
   })
-  console.log(data)
-  console.log(converToPlainObject(data))
+  // console.log(data)
+  // console.log(converToPlainObject(data))
 
   return converToPlainObject(data)
 }

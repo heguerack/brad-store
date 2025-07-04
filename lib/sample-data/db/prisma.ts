@@ -24,6 +24,7 @@ export const prisma = new PrismaClient({ adapter }).$extends({
   // export const prisma = new PrismaClient({ adapter }).$extends({
   result: {
     product: {
+      // needs: { price: true }, // optional because this return scalars, prisma does it internally for scaLARZ
       price: {
         compute(product) {
           return product.price.toString()
@@ -32,6 +33,65 @@ export const prisma = new PrismaClient({ adapter }).$extends({
       rating: {
         compute(product) {
           return product.rating.toString()
+        },
+      },
+    },
+    cart: {
+      itemsPrice: {
+        needs: { itemsPrice: true }, // not too sure about this, but after reasearch it seems like we have manually make it available in the compute
+        compute(cart) {
+          return cart.itemsPrice.toString()
+        },
+      },
+      shippingPrice: {
+        needs: { shippingPrice: true }, // not too sure about this
+        compute(cart) {
+          return cart.shippingPrice.toString()
+        },
+      },
+      taxPrice: {
+        needs: { taxPrice: true }, // not too sure about this
+        compute(cart) {
+          return cart.taxPrice.toString()
+        },
+      },
+      totalPrice: {
+        needs: { totalPrice: true }, // not too sure about this
+        compute(cart) {
+          return cart.totalPrice.toString()
+        },
+      },
+    },
+    order: {
+      itemsPrice: {
+        needs: { itemsPrice: true }, // not too sure about this, but after reasearch it seems like we have manually make it available in the compute
+        compute(cart) {
+          return cart.itemsPrice.toString()
+        },
+      },
+      shippingPrice: {
+        needs: { shippingPrice: true }, // not too sure about this
+        compute(cart) {
+          return cart.shippingPrice.toString()
+        },
+      },
+      taxPrice: {
+        needs: { taxPrice: true }, // not too sure about this
+        compute(cart) {
+          return cart.taxPrice.toString()
+        },
+      },
+      totalPrice: {
+        needs: { totalPrice: true }, // not too sure about this
+        compute(cart) {
+          return cart.totalPrice.toString()
+        },
+      },
+    },
+    orderItem: {
+      price: {
+        compute(cart) {
+          return cart.price.toString()
         },
       },
     },

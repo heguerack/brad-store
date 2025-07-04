@@ -1,4 +1,4 @@
-import { Product } from '@/types'
+import { ProductType } from '@/types'
 import ProductCard from './ProductCard'
 
 export default function ProductList({
@@ -6,7 +6,7 @@ export default function ProductList({
   title,
   limit,
 }: {
-  data: Product[]
+  data: ProductType[]
   title?: string
   limit?: number
 }) {
@@ -17,7 +17,7 @@ export default function ProductList({
       <h2 className='h2-bold mb-4'>{title}</h2>
       {data.length > 0 ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-          {limitedData.map((item: Product) => (
+          {limitedData.map((item: ProductType) => (
             <ProductCard product={item} key={item.slug} />
           ))}
         </div>

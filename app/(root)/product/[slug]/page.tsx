@@ -1,8 +1,11 @@
-import { getSingleproductAction } from '@/actions/getSingleproductAction'
+import { getMyCartAction } from '@/actions/cart/getMyCartAction'
+import { getSingleproductAction } from '@/actions/products/getSingleproductAction'
+import AddItemToCart from '@/components/shared/product/AddItemToCart'
+// import AddItemToCart from '@/components/shared/product/AddItemToCart'
 import ProductImages from '@/components/shared/product/ProductImages'
 import ProductPrice from '@/components/shared/product/ProductPrice'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+
 import { Card, CardContent } from '@/components/ui/card'
 import { notFound } from 'next/navigation'
 
@@ -11,7 +14,9 @@ export default async function productDetailsPage(props: {
 }) {
   const { slug } = await props.params
   const singleproduct = await getSingleproductAction(slug)
-  console.log(singleproduct)
+  // console.log(singleproduct)
+
+  const cart = await getMyCartAction()
 
   if (!singleproduct)
     notFound //it seems like we dont need to return here, if we do, we get an error!
@@ -68,7 +73,23 @@ export default async function productDetailsPage(props: {
 
                     {singleproduct.stock > 0 && (
                       <div className='flex-center'>
-                        <Button className=''>Add To Cart</Button>
+                        {/* so it seems that because this schema does not really match the miodel, when we get the product , we make it a cartItem by filtering the data that we need to please our schema....so we kind of destructure before passing the cartItemObject */}
+                        {/* So yeah basically ce create the product from the cart
+                        item...another way we could have done this is by creatin
+                        ght ecartItem, then extending it to become a product
+                        item */}
+                        <AddItemToCart
+                          cart={cart} // new
+                          item={{
+                            productId: singleproduct.id,
+                            name: singleproduct.name,
+                            slug: singleproduct.slug,
+                            price: singleproduct.price,
+                            qty: 1,
+                            image: singleproduct.images[0],
+                          }}
+                        />
+                        {/* Att to cart item goes here */}
                       </div>
                     )}
                   </CardContent>

@@ -15,24 +15,141 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   //@id makes it a primary key,
   // @Default() //this let us format the id to the uuid type
   // @db.Uuid this makes sure we have the uuid type
   name        String
-  slug        String   @unique(map: "product_slug_idx") //with the map() w add an index
+  slug        String      @unique(map: "product_slug_idx") //with the map() w add an index
   category    String
   images      String[]
   brand       String
   description String
   stock       Int
-  price       Decimal  @default(0) @db.Decimal(12, 2)
+  price       Decimal     @default(0) @db.Decimal(12, 2)
   //@default(0) is a default with a value of 0
   //@db.Decimal(12, 2) this makes sure its a decimal , and this how you say how many digits on each side of the coma
-  rating      Decimal  @default(0) @db.Decimal(3, 2)
-  numReviews  Int      @default(0)
-  isFeatured  Boolean  @default(false)
+  rating      Decimal     @default(0) @db.Decimal(3, 2)
+  numReviews  Int         @default(0)
+  isFeatured  Boolean     @default(false)
   banner      String?
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  createdAt   DateTime    @default(now()) @db.Timestamp(6)
   // @db.Timestamp(6) , this add 6 digits to the miliseconds part
+  OrderItem   OrderItem[]
+}
+
+model User {
+  // id            String    @id @default(cuid())
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  // name          String?
+  name          String    @default("NO_NAME")
+  // email         String    @unique 
+  email         String    @unique(map: "user_email_idx") //not sure of this one
+  // emailVerified DateTime?
+  emailVerified DateTime? @db.Timestamp(6)
+  image         String?
+  //we add password
+  password      String? // we leave it optional cuz we might not require a password depending on setup
+  // we add role 
+  role          String    @default("user")
+  // we add address 
+  address       Json?     @db.Json
+  // we add payment
+  paymentMethod String?
+  // createdAt     DateTime  @default(now())
+  createdAt     DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime  @updatedAt
+  Account       Account[] // this one gets added(Auto complete) when we save the Acount model below
+  Session       Session[] // this one get added (Auto complete) when we save the Session Model below
+  Cart          Cart[] // this one get added (Auto complete) when we save the Cart 
+  Order         Order[]
+}
+
+model Account {
+  //  userId            String
+  userId            String   @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  // createdAt         DateTime @default(now())
+  createdAt         DateTime @default(now()) @db.Timestamp(6)
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId]) //this one is realted to user model via: Account Account[] 
+}
+
+model Session {
+  // sessionToken String   @unique
+  sessionToken String   @id //this way we make it the same as the primary key, which is default too, but also a primary key!
+  // userId       String
+  userId       String   @db.Uuid
+  // expires DateTime
+  expires      DateTime @db.Timestamp(6)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // createdAt DateTime @default(now())
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Cart {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String?  @db.Uuid
+  sessionCartId String
+  items         Json[]   @default([]) @db.Json
+  itemsPrice    Decimal  @db.Decimal(12, 2)
+  totalPrice    Decimal  @db.Decimal(12, 2)
+  shippingPrice Decimal  @db.Decimal(12, 2)
+  taxPrice      Decimal  @db.Decimal(12, 2)
+  updatedAt     DateTime @default(now()) @db.Timestamp(6)
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade) // i made the suer optional, bacause agai, we might not the the user to start with the cart or transsation
+}
+
+model Order {
+  id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String      @db.Uuid //this userId shoudnt be optionl, just make sure of it
+  shippingAddress Json        @db.Json
+  paymentMethod   String
+  paymentResult   Json?       @db.Json
+  itemsPrice      Decimal     @db.Decimal(12, 2)
+  shippingPrice   Decimal     @db.Decimal(12, 2)
+  taxPrice        Decimal     @db.Decimal(12, 2)
+  totalPrice      Decimal     @db.Decimal(12, 2)
+  isPaid          Boolean     @default(false)
+  paidAt          DateTime?   @db.Timestamp(6)
+  isDelivered     Boolean     @default(false)
+  deliveredAt     DateTime?   @db.Timestamp(6)
+  updatedAt       DateTime    @default(now()) @db.Timestamp(6)
+  createdAt       DateTime    @default(now()) @db.Timestamp(6)
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade) // no optional for this one, as its not about the cart but payment already!
+  OrderItems      OrderItem[]
+}
+
+model OrderItem {
+  orderId   String   @db.Uuid
+  productId String   @db.Uuid
+  qty       Int
+  price     Decimal  @db.Decimal(12, 2)
+  name      String
+  slug      String
+  image     String
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([orderId, productId], map: "orderitems_orderId_productId_pk") //im still not 100% sure on how this combination works, like we creat an id using two ids? anyways it seems we can add a name too after the barket. it also seems that when done this way the id is at the bototm
 }

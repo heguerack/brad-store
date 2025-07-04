@@ -1,6 +1,6 @@
+import { getLatestProductsAction } from '@/actions/products/getLatestProductsAction'
 import ProductList from '@/components/shared/product/ProductList'
-import { getLatestProducts } from '@/helperFuntions/getLatestproducts'
-import { Product } from '@/types'
+import { ProductType } from '@/types'
 
 import { Metadata } from 'next'
 
@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 }
 
 export default async function page() {
-  const products: Product[] = await getLatestProducts()
-  console.log(products)
+  const products: ProductType[] = await getLatestProductsAction()
+  // console.log(products)
 
   return (
     <>
-      <ProductList data={products} title='Newest Arrivals' limit={3} />
+      <ProductList data={products} title='Newest Arrivals' limit={6} />
       <h1>hello </h1>
     </>
   )
