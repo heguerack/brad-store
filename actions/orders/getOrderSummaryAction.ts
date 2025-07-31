@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/sample-data/db/prisma'
 import { Prisma } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
 
 type SalesDataType = {
   month: string
@@ -22,7 +23,9 @@ export async function getOrderSummaryAction() {
   // get monthly sales
   // the reason why we do this is bacuase the totalSales is gonna be in the formatt of prismaDeciimal but we want a number. so we goota deal with regular raw data
   const salesDataRaw = await prisma.$queryRaw<
-    Array<{ month: string; totalSales: Prisma.Decimal }>
+    //  Array<{ month: string; totalSales: Prisma.Decimal }>
+    // Decimal comes from the Prisma runtime (which handles Decimal.js internally), not from @prisma/client's top-level Prisma namespace.
+    Array<{ month: string; totalSales: Decimal }>
   >`SELECT to_char("createdAt", 'MM/YY') as "month", sum("totalPrice") as "totalSales" FROM "Order" GROUP BY to_char("createdAt", 'MM/YY')`
 
   const salesData: SalesDataType = salesDataRaw.map((entry) => ({
