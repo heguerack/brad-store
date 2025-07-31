@@ -6,6 +6,7 @@ import { prisma } from '@/lib/sample-data/db/prisma'
 import { calculateCartPrices } from '@/helperFuntions/calculateCartPrices'
 import { revalidatePath } from 'next/cache'
 import { Prisma } from '@prisma/client'
+import { CartItemType } from '@/types'
 
 export async function removeItemFromCartAction(id: string) {
   try {
@@ -30,7 +31,9 @@ export async function removeItemFromCartAction(id: string) {
     if (!cart) throw new Error('cart now found')
 
     // remove item from cart
-    let itemToProcess = cart.items.find((cartItem) => cartItem.productId === id)
+    let itemToProcess = cart.items.find(
+      (cartItem: CartItemType) => cartItem.productId === id
+    )
     if (!itemToProcess) throw new Error('Not item to process')
 
     //check quantity, if quantity===0 just remove the item
