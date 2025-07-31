@@ -17,7 +17,7 @@ git push -u origin main
 git branch
 git checkout main
 git add .
-git commit -m "third fix types"
+git commit -m "6th fix types"
 git push -u origin main
 ```
 
