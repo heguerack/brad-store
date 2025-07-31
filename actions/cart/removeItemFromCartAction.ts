@@ -38,7 +38,9 @@ export async function removeItemFromCartAction(id: string) {
 
     //check quantity, if quantity===0 just remove the item
     if (itemToProcess.qty === 1) {
-      const filteredCart = cart.items.filter((item) => item.productId !== id)
+      const filteredCart = cart.items.filter(
+        (item: CartItemType) => item.productId !== id
+      )
       console.log('filteredCart :', filteredCart)
       //remove item/product and update database
       await prisma.cart.update({
@@ -55,7 +57,7 @@ export async function removeItemFromCartAction(id: string) {
       await prisma.cart.update({
         where: { id: cart.id },
         data: {
-          items: cart.items as Prisma.CartUpdateitemsInput[], //this is just a type ting, making sure its good
+          items: cart.items, //this is just a type ting, making sure its good
           ...calculateCartPrices(cart.items),
         },
       })
