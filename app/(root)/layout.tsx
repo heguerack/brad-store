@@ -3,8 +3,7 @@
 import Footer from '@/components/shared/Footer'
 import Header from '@/components/shared/header'
 
-export const revalidate = 60 * 60 * 24 * 30 // ✅ revalidate every 30 days
-
+// export const revalidate = 2592000  // wont work correctly as its used only when fetching
 export default async function Layout({
   children,
 }: {

@@ -58,7 +58,7 @@ export async function addItemToCartAction(data: CartItemType) {
     } else {
       // check if items  is already in the cart
       const hasItem = cart.items.find(
-        (cartIitem) => cartIitem.productId === item.productId
+        (cartIitem: CartItemType) => cartIitem.productId === item.productId
       )
       if (hasItem) {
         // check stok, make sure we have enuough
