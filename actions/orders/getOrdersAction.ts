@@ -19,6 +19,7 @@ export async function getOrdersAction({
     const session = await auth()
     if (!session) throw new Error('Auauthorized from get order session')
 
+    // const queryFilter: Prisma.OrderWhereInput =
     const queryFilter: Prisma.OrderWhereInput =
       query && query !== 'all'
         ? {
