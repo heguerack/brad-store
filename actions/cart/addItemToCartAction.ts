@@ -67,7 +67,7 @@ export async function addItemToCartAction(data: CartItemType) {
         }
         // itherwise we can increase the quantity to buy
         cart.items.find(
-          (cartItem) => cartItem.productId === item.productId
+          (cartItem: CartItemType) => cartItem.productId === item.productId
         )!.qty = hasItem.qty + 1
       } else {
         //if item does not exists (or doesnt have the itme in cart)
