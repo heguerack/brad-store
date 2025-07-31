@@ -11115,3 +11115,7 @@ export default async function stripePaymentSuccessPage(props: {
 ```
 
 - Now here is the deal, if we go to the order page, it shows upaid, and we can even see the stripe fomr thre. so what we need to do is make sure the app is uptodate in vercel , then we will use a webhook, to update from stripe inti the website.
+
+## DEPLOYMENT TIME
+
+- We should have done this long time ago! naywways, lets make sure everyhting is nice and tight. after deploymenty donbt forget to change the BASEURL manually, but hm, ima guessing there must be a better way, like setting a automatic BASEURL || local. impretty sure we can do that so that we dont have to deal with those manually. anyways for now lets leave it like ti is and retype those URLS m,anually
