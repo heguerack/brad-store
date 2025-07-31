@@ -20,7 +20,7 @@ export default function SigninFormWithCredentials() {
 
   return (
     <form className='space-y-6 ' action={action}>
-      <input type='hidden' name='callbackRul' value={callbackUrl} />
+      <input type='hidden' name='callbackUrl' value={callbackUrl} />
       <div className=''>
         <Label htmlFor='email' className=''>
           Email
