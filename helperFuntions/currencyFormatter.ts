@@ -5,7 +5,7 @@ export const currencyFormatter = new Intl.NumberFormat('en-us', {
 })
 
 /// format currency using the formatter
-export const formatCurrencyHelper = (amount: number | string | null) => {
+export const formatCurrencyHelper = (amount: any) => {
   if (typeof amount === 'number') {
     return currencyFormatter.format(amount)
   } else if (typeof amount === 'string') {

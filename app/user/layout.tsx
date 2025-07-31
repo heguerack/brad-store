@@ -2,9 +2,7 @@ import Menu from '@/components/shared/header/Menu'
 import { APP_NAME } from '@/lib/contants'
 import Image from 'next/image'
 import Link from 'next/link'
-import MainNav from '../MainNav'
-
-export const revalidate = 60 * 60 * 24 * 30 // ✅ revalidate every 30 days
+import MainNav from './MainNav'
 
 export default async function UsersLayout({
   children,
@@ -31,7 +29,9 @@ export default async function UsersLayout({
             </div>
           </div>
         </div>
-        <div className='flex-1 spac-y-4 p-8 pt-6 container mx-auto '></div>
+        <div className='flex-1 space-y-4 p-8 pt-6 container mx-auto '>
+          {children}
+        </div>
       </div>
     </>
   )

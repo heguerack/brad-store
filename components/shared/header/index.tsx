@@ -2,12 +2,15 @@ import { APP_NAME } from '@/lib/contants'
 import Image from 'next/image'
 import Link from 'next/link'
 import Menu from './Menu'
+import CategoryDrawer from './CategoryDrawer'
+import Search from './Search'
 
 export default function Header() {
   return (
     <header className='w-full border-b'>
       <div className='wrapper flex-between'>
-        <div className='flex-start'>
+        <div className='flex-start ml-4'>
+          <CategoryDrawer />
           <Link href={'/'} className='flex-start'>
             <Image
               src={'/images/logo.svg'}
@@ -20,6 +23,9 @@ export default function Header() {
               {APP_NAME}
             </span>
           </Link>
+        </div>
+        <div className='hidden md:block'>
+          <Search />
         </div>
         <Menu />
       </div>

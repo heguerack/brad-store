@@ -13,6 +13,8 @@ import { SignOutUser } from '@/actions/users/SignOutUser'
 
 export default async function UserButton() {
   const session = await auth()
+  console.log('role :', session?.user?.role)
+
   if (!session)
     return (
       <Button asChild variant={'default'}>
@@ -46,6 +48,26 @@ export default async function UserButton() {
               </div>
             </div>
           </DropdownMenuLabel>
+          <DropdownMenuItem>
+            <Link href='/user/profile' className='w-full'>
+              User Profile
+            </Link>
+          </DropdownMenuItem>
+          {/* however the role will be complaining as thast not in type , and the reason for that is beacause the nextAuth just has name, email, password i think, n=but not role, so we have to extend the type */}
+          {/* go to types  */}
+
+          {session?.user?.role === 'admin' && (
+            <DropdownMenuItem>
+              <Link href='/admin/overview' className='w-full'>
+                {session?.user?.role}
+              </Link>
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem>
+            <Link href='/user/orders' className='w-full'>
+              Order History{' '}
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem className='p-0 mb-1'>
             <form action={SignOutUser} className='w-full'>
               <Button

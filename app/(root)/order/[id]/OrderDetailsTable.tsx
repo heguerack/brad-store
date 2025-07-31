@@ -25,13 +25,23 @@ import {
 import { createPaypalOrderAction } from '@/actions/orders/createPaypalOrderAction'
 import { toast } from 'sonner'
 import { approvePaypalOrderAction } from '@/actions/orders/approvePaypalOrderAction'
+import { startTransition, useTransition } from 'react'
+import { Button } from '@/components/ui/button'
+import { updateOrderToPaidCashAction } from '@/actions/orders/updateOrderToPaidCashAction'
+
+import { updateOrderToDelivered } from '@/actions/orders/updateOrderToDelivered'
+import StripePayment from './StripePayment'
 
 export default function OrderDetailsTable({
   order,
   paypalClientId,
+  isAdmin,
+  stripeClientSecret,
 }: {
   order: OrderType
   paypalClientId: string
+  isAdmin: boolean
+  stripeClientSecret: string | null
 }) {
   const {
     shippingAddress,
@@ -45,8 +55,11 @@ export default function OrderDetailsTable({
     paidAt,
     deliveredAt,
   } = order
+  console.log('paymentMethod :', paymentMethod)
 
   const orderId = formattUUID(order.id)
+  const totalPrice =
+    Number(itemsPrice) + Number(taxPrice) + Number(shippingPrice)
 
   const PrintLoadingState = () => {
     const [{ isPending, isRejected }] = usePayPalScriptReducer()
@@ -77,6 +90,48 @@ export default function OrderDetailsTable({
     if (res.success === false) {
       toast.error(res.message)
     }
+  }
+
+  const MarkAsPaidButton = () => {
+    const [isPending, startTransition] = useTransition()
+    return (
+      <Button
+        type='button'
+        disabled={isPending}
+        onClick={() =>
+          startTransition(async () => {
+            const res = await updateOrderToPaidCashAction(order.id)
+            if (res.success) {
+              toast.success(res.message)
+            } else {
+              toast.error(res.message)
+            }
+          })
+        }>
+        {isPending ? 'Processing...' : 'Mark As Paid'}
+      </Button>
+    )
+  }
+
+  const MarkAsDeliveredButton = () => {
+    const [isPending, startTransition] = useTransition()
+    return (
+      <Button
+        type='button'
+        disabled={isPending}
+        onClick={() =>
+          startTransition(async () => {
+            const res = await updateOrderToDelivered(order.id)
+            if (res.success) {
+              toast.success(res.message)
+            } else {
+              toast.error(res.message)
+            }
+          })
+        }>
+        {isPending ? 'Processing...' : 'Mark as Delivered'}
+      </Button>
+    )
   }
 
   return (
@@ -139,7 +194,7 @@ export default function OrderDetailsTable({
               <div className='flex justify-between'>
                 <div className='font-bold'>Total</div>
                 <div className='font-bold'>
-                  {formatCurrencyHelper(taxPrice)}
+                  {formatCurrencyHelper(totalPrice)}
                 </div>
               </div>
               {/* paypal payment  */}
@@ -157,6 +212,29 @@ export default function OrderDetailsTable({
                   </PayPalScriptProvider>
                 </div>
               )}
+              {/* STRIPE PAYMENT  */}
+              {/* STRIPE PAYMENT  */}
+              {!isPaid && paymentMethod === 'Stripe' && stripeClientSecret && (
+                <StripePayment
+                  priceInCents={Number(order.totalPrice) * 100} // to have it in cents
+                  orderId={order.id}
+                  clientSecret={stripeClientSecret}
+                />
+              )}
+
+              {/* STRIPE PAYMENT  */}
+              {/* STRIPE PAYMENT  */}
+              {/* //////////////////////////////////// */}
+              {/* CASH ON DELIVERY */}
+              {/* CASH ON DELIVERY */}
+              {/* CASH ON DELIVERY */}
+              {isAdmin && !isPaid && paymentMethod === 'cashOnDelivery' && (
+                <MarkAsPaidButton />
+              )}
+              {isAdmin && isPaid && !isDelivered && <MarkAsDeliveredButton />}
+              {/* CASH ON DELIVERY */}
+              {/* CASH ON DELIVERY */}
+              {/* CASH ON DELIVERY */}
             </CardContent>
           </Card>
         </div>

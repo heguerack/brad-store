@@ -11,7 +11,13 @@ export const calculateCartPrices = (items: CartItemType[]) => {
   const taxPrice = roundTwoDecimals(itemsPrice * 0.15)
 
   const totalPrice = itemsPrice + shippingPrice + taxPrice
-  console.log(typeof itemsPrice.toString(), itemsPrice.toString())
+
+  console.log('itemsPrice :', itemsPrice)
+  console.log('shippingPrice :', shippingPrice)
+  console.log('taxPrice :', taxPrice)
+  console.log('totalPrice :', totalPrice)
+
+  // console.log(typeof itemsPrice.toString(), itemsPrice.toString())
 
   return {
     itemsPrice: itemsPrice.toString(),

@@ -9,6 +9,8 @@ import {
 import { paymentMethodSchema } from '@/zod-schema-validator/paymentMethodSchema'
 import { paymentResultSchema } from '@/zod-schema-validator/paymentResultSchema'
 import { InsertProductSchema } from '@/zod-schema-validator/productSchemas'
+import { insertReviewSChema } from '@/zod-schema-validator/reviewsSchema'
+
 import { shippingAddressSchema } from '@/zod-schema-validator/shippingAddressSchema'
 import { z } from 'zod'
 
@@ -16,6 +18,7 @@ export type ProductType = z.infer<typeof InsertProductSchema> & {
   id: string
   rating: string
   createdAt: Date
+  numReviews: number
 }
 
 export type CartItemType = z.infer<typeof cartItemSchema>
@@ -40,3 +43,9 @@ export type OrderType = z.infer<typeof insertOrderSchema> & {
 }
 
 export type PaymentResultType = z.infer<typeof paymentResultSchema>
+
+export type ReviewType = z.infer<typeof insertReviewSChema> & {
+  id: string
+  createdAt: Date
+  user?: { name: string }
+}

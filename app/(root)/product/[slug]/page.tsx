@@ -1,5 +1,6 @@
 import { getMyCartAction } from '@/actions/cart/getMyCartAction'
 import { getSingleproductAction } from '@/actions/products/getSingleproductAction'
+import { auth } from '@/auth'
 import AddItemToCart from '@/components/shared/product/AddItemToCart'
 // import AddItemToCart from '@/components/shared/product/AddItemToCart'
 import ProductImages from '@/components/shared/product/ProductImages'
@@ -8,6 +9,8 @@ import { Badge } from '@/components/ui/badge'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { notFound } from 'next/navigation'
+import ReviewList from './ReviewList'
+import Rating from '@/components/shared/product/Rating'
 
 export default async function productDetailsPage(props: {
   params: Promise<{ slug: string }>
@@ -18,8 +21,11 @@ export default async function productDetailsPage(props: {
 
   const cart = await getMyCartAction()
 
+  const session = await auth()
+  const userId = session?.user?.id
+
   if (!singleproduct)
-    notFound //it seems like we dont need to return here, if we do, we get an error!
+    notFound //i we dont need to return here, if we do, we get an error!
   else
     return (
       <>
@@ -37,9 +43,10 @@ export default async function productDetailsPage(props: {
                   {singleproduct.brand} {singleproduct.category}
                 </p>
                 <h1 className='h3-bold'>{singleproduct.name}</h1>
-                <p className=''>
+                {/* <p className=''>
                   {singleproduct.rating} of {singleproduct.numReviews} Reviews
-                </p>
+                </p> */}
+                <Rating value={Number(singleproduct.rating)} />
                 <div className='felx flex-col sm:flex-row sm:items-center gap-3'>
                   {/* <ProductPrice value={Number(singleproduct.price)} /> */}
                   <ProductPrice
@@ -97,6 +104,14 @@ export default async function productDetailsPage(props: {
               </div>
             </div>
           </div>
+        </section>
+        <section className='mt-10'>
+          <h2 className='h2-bold'>Customer Reviews</h2>
+          <ReviewList
+            userId={userId || ''}
+            productId={singleproduct.id}
+            productSlug={singleproduct.slug}
+          />
         </section>
       </>
     )

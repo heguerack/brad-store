@@ -36,6 +36,7 @@ model Product {
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
   // @db.Timestamp(6) , this add 6 digits to the miliseconds part
   OrderItem   OrderItem[]
+  Reviews     Review[]
 }
 
 model User {
@@ -63,6 +64,7 @@ model User {
   Session       Session[] // this one get added (Auto complete) when we save the Session Model below
   Cart          Cart[] // this one get added (Auto complete) when we save the Cart 
   Order         Order[]
+  Review        Review[]
 }
 
 model Account {
@@ -152,4 +154,17 @@ model OrderItem {
   product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@id([orderId, productId], map: "orderitems_orderId_productId_pk") //im still not 100% sure on how this combination works, like we creat an id using two ids? anyways it seems we can add a name too after the barket. it also seems that when done this way the id is at the bototm
+}
+
+model Review {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String   @db.Uuid
+  productId          String   @db.Uuid
+  rating             Int
+  title              String
+  description        String
+  isVerifiedPurshase Boolean  @default(true)
+  createdAt          DateTime @default(now()) @db.Timestamp(6)
+  product            Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

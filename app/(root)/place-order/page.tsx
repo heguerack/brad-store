@@ -129,7 +129,7 @@ export default async function page() {
               <div className='flex justify-between'>
                 <div className='font-bold'>Total</div>
                 <div className='font-bold'>
-                  {formatCurrencyHelper(cart.taxPrice)}
+                  {formatCurrencyHelper(cart.totalPrice)}
                 </div>
               </div>
               <PlaceOrderForm />
