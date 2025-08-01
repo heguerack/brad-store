@@ -11116,6 +11116,54 @@ export default async function stripePaymentSuccessPage(props: {
 
 - Now here is the deal, if we go to the order page, it shows upaid, and we can even see the stripe fomr thre. so what we need to do is make sure the app is uptodate in vercel , then we will use a webhook, to update from stripe inti the website.
 
-## DEPLOYMENT TIME
+### DEPLOYMENT TIME
 
-- We should have done this long time ago! naywways, lets make sure everyhting is nice and tight. after deploymenty donbt forget to change the BASEURL manually, but hm, ima guessing there must be a better way, like setting a automatic BASEURL || local. impretty sure we can do that so that we dont have to deal with those manually. anyways for now lets leave it like ti is and retype those URLS m,anually
+- We should have done this long time ago! naywways, lets make sure everyhting is nice and tight. after deploymenty donbt forget to change the BASEURL manually, but hm, ima guessing there must be a better way, like setting a automatic BASEURL || local. impretty sure we can do that so that we dont have to deal with those manually. anyways for now lets leave it like ti is and retype those URLS manually
+
+### Webhook to mark Order As Paid
+
+- `https://docs.stripe.com/webhooks/quickstart`
+- create a webhook api
+
+```ts
+import { updateOrderToPaid } from '@/actions/orders/updateOrderToPaidAction'
+import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
+
+export async function POST(req: NextRequest) {
+  const event = await Stripe.webhooks.constructEvent(
+    await req.text(),
+    req.headers.get('stripe-signature') as string,
+    process.env.STRIPE_WEBHOOK_SECRET as string
+  )
+
+  //check fro successfull payment
+  if (event.type === 'charge.succeeded') {
+    const { object } = event.data
+
+    //update order status
+    //the object is like the payment intent we created in ordeer/[id]/page.tsx where we injected metadata and stuff
+    await updateOrderToPaid({
+      orderId: object.metadata.orderId,
+      paymentResult: {
+        id: object.id,
+        status: 'COMPLETED',
+        email_address: object.billing_details.email!,
+        pricePaid: (object.amount * 100).toFixed(),
+      },
+    })
+    return NextResponse.json({
+      message: 'UpdateOrderToPaid was successful',
+    })
+  }
+  return NextResponse.json({
+    message: 'Event is not charge.succeeded ',
+  })
+}
+```
+
+- Now go to stripe dashboard `https://dashboard.stripe.com/test/workbench/webhooks`
+- Select event = `charge.succeeded`
+- Add end point = `https://brad-store.vercel.app/api/wedhooks/stripe` to match our folders
+- Description is optional
+-
