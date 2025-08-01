@@ -11166,4 +11166,5 @@ export async function POST(req: NextRequest) {
 - Select event = `charge.succeeded`
 - Add end point = `https://brad-store.vercel.app/api/wedhooks/stripe` to match our folders
 - Description is optional
--
+- you can add the key directly to vercel as it wont be used in development, name it the same as in the route, in this case, STRIPE_WEBHOOK_SECRET
+- test witha payment on the live project

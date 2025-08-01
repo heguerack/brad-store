@@ -28,4 +28,7 @@ export async function POST(req: NextRequest) {
       message: 'UpdateOrderToPaid was successful',
     })
   }
+  return NextResponse.json({
+    message: 'UpdateOrderToPaid is NOT cahrge.succeeded',
+  })
 }

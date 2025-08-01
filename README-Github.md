@@ -17,7 +17,7 @@ git push -u origin main
 git branch
 git checkout main
 git add .
-git commit -m "13th fixed callback url"
+git commit -m "fix1 stripe webhooks"
 git push -u origin main
 ```
 
