@@ -17,7 +17,7 @@ git push -u origin main
 git branch
 git checkout main
 git add .
-git commit -m "fix1 stripe webhooks"
+git commit -m "finally stripe upto date"
 git push -u origin main
 ```
 

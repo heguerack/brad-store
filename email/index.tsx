@@ -2,7 +2,9 @@ import { APP_NAME } from '@/lib/contants'
 import { OrderType } from '@/types'
 import { Resend } from 'resend'
 import PurchaceReceiptEmail from './PurchaceReceiptEmail'
-require('dotenv').config()
+// require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 
 const resend = new Resend(process.env.RESEND_API_KEY as string)
 const senderEmail = process.env.SENDER_EMAIL

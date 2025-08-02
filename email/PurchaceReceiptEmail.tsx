@@ -1,7 +1,9 @@
 import { formatCurrencyHelper } from '@/helperFuntions/currencyFormatter'
 import sampleData from '@/lib/sample-data/db/sample-data'
 import { OrderType } from '@/types'
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
+
 import {
   Body,
   Column,
