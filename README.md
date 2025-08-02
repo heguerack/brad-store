@@ -11168,3 +11168,334 @@ export async function POST(req: NextRequest) {
 - Description is optional
 - you can add the key directly to vercel as it wont be used in development, name it the same as in the route, in this case, STRIPE_WEBHOOK_SECRET
 - test witha payment on the live project
+- stripe should be all set now
+
+## email receipt with RESEND and REACT-EMAIL
+
+- Resend account Setup
+- Receipt Email template
+- Preview Email in Browser
+- Send email from App
+
+### Resend API key and setup
+
+- create API key
+- `SENDER_EMAIL="onboarding@resend.dev"` = a test email we can use while in dev mode
+- intasll packages `npm i resend react-email @react-email/components`
+- react-email = templates
+- react-email/components = components
+- create email folder in the root, with an index.tsx file
+- becasue the email folder is not in the app strcutureof next js, we must add the dotenv packgage., remeber that if a client componet grabs the key it will leak!
+
+### REsend Main Funtion
+
+```ts
+import { APP_NAME } from '@/lib/contants'
+import { OrderType } from '@/types'
+import { Resend } from 'resend'
+import PurchaceReceiptEmail from './PurchaceReceiptEmail'
+
+const resend = new Resend(process.env.RESEND_API_KEY as string)
+const senderEmail = process.env.SENDER_EMAIL
+const appName = APP_NAME
+
+export const sendPurchaseReceipt = async ({ order }: { order: OrderType }) => {
+  await resend.emails.send({
+    from: `${appName} <${senderEmail}>`,
+    to: order.user.email,
+    subject: `Order confirmation ${order.id}`,
+    //so it seems like resnd let us use react components directly in there! but not sure yet which library is doing what, as we installed 3 packages
+    react: (
+      <>
+        <PurchaceReceiptEmail order={order} />
+      </>
+    ),
+  })
+}
+```
+
+```ts
+import { OrderType } from '@/types'
+
+export default function PurchaceReceiptEmail({ order }: { order: OrderType }) {
+  return <div>PurshaceReceipt</div>
+}
+```
+
+### Purshase email receipt template
+
+- creat a PurchaceReceiptEmail component in the email folder
+
+```ts
+import { formatCurrencyHelper } from '@/helperFuntions/currencyFormatter'
+import { OrderType } from '@/types'
+import {
+  Body,
+  Column,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Row,
+  Img,
+  Section,
+  Tailwind,
+  Text,
+} from '@react-email/components'
+
+const dateFormatter = new Intl.DateTimeFormat('en', { dateStyle: 'medium' })
+
+export default function PurchaceReceiptEmail({ order }: { order: OrderType }) {
+  return (
+    <Html>
+      <Preview>View order receipt</Preview>
+      <Tailwind>
+        <Head />
+        <Body className='font-sans bg-white'>
+          <Container className='max-w-xl'>
+            <Heading>Purshase Receipt</Heading>
+            <Section>
+              <Row>
+                <Column>
+                  <Text className='mb-0 mr-4 text-gray-500 whitespace-nowrap text-nowrap'>
+                    Order ID
+                  </Text>
+                  <Text className='mt-0 mr-4'>{order.id.toString()}</Text>
+                </Column>
+                <Column>
+                  <Text className='mb-0 mr-4 text-gray-500 whitespace-nowrap text-nowrap'>
+                    Purshase Date
+                  </Text>
+                  <Text className='mt-0 mr-4'>
+                    {/* interesting */}
+                    {dateFormatter.format(order.createdAt)}
+                  </Text>
+                </Column>
+                <Column>
+                  <Text className='mb-0 mr-4 text-gray-500 whitespace-nowrap text-nowrap'>
+                    Price Paid
+                  </Text>
+                  <Text className='mt-0 mr-4'>
+                    {formatCurrencyHelper(order.totalPrice)}
+                  </Text>
+                </Column>
+              </Row>
+            </Section>
+            <Section className='border border-solid border-gray-500 rounded-lg p-4 md:p-6  my-4'>
+              {order.OrderItems.map((item) => (
+                <Row key={item.slug} className='mt-8'>
+                  <Column className='w-20 '>
+                    <Img
+                      width='80'
+                      alt={item.name}
+                      className='rounded'
+                      // im not sure about this logic, like i understand the logic but not sure why local images and outside images for emails. because so far the images are part of the product . nd by the way we must have added the fist image of the product images as image for the order
+                      src={
+                        item.image.startsWith('/')
+                          ? `${process.env.NEXT_PUBLIC_SERVER_URL}${item.image}`
+                          : item.image
+                      }
+                    />
+                  </Column>
+                  <Column className='align-top'>
+                    {item.name} x {item.qty}
+                  </Column>
+
+                  <Column align='right' className='align-top'>
+                    {formatCurrencyHelper(item.price)}
+                  </Column>
+                </Row>
+              ))}
+              {[
+                { name: 'Items', price: order.itemsPrice },
+                { name: 'Tax', price: order.taxPrice },
+                { name: 'Shipping', price: order.shippingPrice },
+                { name: 'Total', price: order.totalPrice },
+              ].map(({ name, price }) => (
+                <Row className='py-1' key={name}>
+                  <Column align='right'>{name}:</Column>
+                  <Column align='right' width={70} className='align-top'>
+                    <Text className='m-0'>{formatCurrencyHelper(price)}</Text>
+                  </Column>
+                </Row>
+              ))}
+            </Section>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
+  )
+}
+```
+
+### Preview Email in Browser with React Email
+
+```ts
+import { formatCurrencyHelper } from '@/helperFuntions/currencyFormatter'
+import sampleData from '@/lib/sample-data/db/sample-data'
+import { OrderType } from '@/types'
+require('dotenv').config()
+import {
+  Body,
+  Column,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Row,
+  Img,
+  Section,
+  Tailwind,
+  Text,
+} from '@react-email/components'
+
+// we cant do this if we use an arrow function for the main funtion PurchaceReceiptEmail
+PurchaceReceiptEmail.PreviewProps = {
+  order: {
+    id: crypto.randomUUID(),
+    userId: '123',
+    user: {
+      name: 'John Doe',
+      email: 'test@test.com',
+    },
+    paymentMethod: 'Stripe',
+    shippingAddress: {
+      fullName: 'John Doe',
+      streetAddress: '123 Main st',
+      city: 'New York',
+      postalCode: '10001',
+      country: 'US',
+    },
+    createdAt: new Date(),
+    totalPrice: '100',
+    taxPrice: '10',
+    shippingPrice: '10',
+    itemsPrice: '80',
+    OrderItems: sampleData.products.map((x) => ({
+      name: x.name,
+      orderId: '123',
+      productId: '123',
+      slug: x.slug,
+      qty: x.stock,
+      image: x.images[0],
+      price: x.price.toString(),
+    })),
+    isDelivered: true,
+    deliveredAt: new Date(),
+    isPaid: true,
+    paidAt: new Date(),
+    paymentResult: {
+      id: '123',
+      status: 'succeeded',
+      pricePaid: '100',
+      email_address: 'test@test.com',
+    },
+  },
+} satisfies OrderInformationProps
+
+type OrderInformationProps = {
+  order: OrderType
+}
+const dateFormatter = new Intl.DateTimeFormat('en', { dateStyle: 'medium' })
+
+export default function PurchaceReceiptEmail({ order }: OrderInformationProps) {
+  return (
+    <Html>
+      <Preview>View order receipt</Preview>
+      <Tailwind>
+        <Head />
+        <Body className='font-sans bg-white'>
+          <Container className='max-w-xl'>
+            <Heading>Purshase Receipt</Heading>
+            <Section>
+              <Row>
+                <Column>
+                  <Text className='mb-0 mr-4 text-gray-500 whitespace-nowrap text-nowrap'>
+                    Order ID
+                  </Text>
+                  <Text className='mt-0 mr-4'>{order.id.toString()}</Text>
+                </Column>
+                <Column>
+                  <Text className='mb-0 mr-4 text-gray-500 whitespace-nowrap text-nowrap'>
+                    Purshase Date
+                  </Text>
+                  <Text className='mt-0 mr-4'>
+                    {/* interesting */}
+                    {dateFormatter.format(order.createdAt)}
+                  </Text>
+                </Column>
+                <Column>
+                  <Text className='mb-0 mr-4 text-gray-500 whitespace-nowrap text-nowrap'>
+                    Price Paid
+                  </Text>
+                  <Text className='mt-0 mr-4'>
+                    {formatCurrencyHelper(order.totalPrice)}
+                  </Text>
+                </Column>
+              </Row>
+            </Section>
+            <Section className='border border-solid border-gray-500 rounded-lg p-4 md:p-6  my-4'>
+              {order.OrderItems.map((item) => (
+                <Row key={item.slug} className='mt-8'>
+                  <Column className='w-20 '>
+                    <Img
+                      width='80'
+                      alt={item.name}
+                      className='rounded'
+                      // im not sure about this logic, like i understand the logic but not sure why local images and outside images for emails. because so far the images are part of the product . nd by the way we must have added the fist image of the product images as image for the order
+                      src={
+                        item.image.startsWith('/')
+                          ? `${process.env.NEXT_PUBLIC_SERVER_URL}${item.image}`
+                          : item.image
+                      }
+                    />
+                  </Column>
+                  <Column className='align-top'>
+                    {item.name} x {item.qty}
+                  </Column>
+
+                  <Column align='right' className='align-top'>
+                    {formatCurrencyHelper(item.price)}
+                  </Column>
+                </Row>
+              ))}
+              {[
+                { name: 'Items', price: order.itemsPrice },
+                { name: 'Tax', price: order.taxPrice },
+                { name: 'Shipping', price: order.shippingPrice },
+                { name: 'Total', price: order.totalPrice },
+              ].map(({ name, price }) => (
+                <Row className='py-1' key={name}>
+                  <Column align='right'>{name}:</Column>
+                  <Column align='right' width={70} className='align-top'>
+                    <Text className='m-0'>{formatCurrencyHelper(price)}</Text>
+                  </Column>
+                </Row>
+              ))}
+            </Section>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
+  )
+}
+```
+
+- create script in package.json
+
+```ts
+  "email": "cmd /c \"copy .env .\\node_modules\\react-email\\.env && email dev --dir email --port 3001\""
+
+```
+
+- run `npm run email` this way we can preview the emial with the dummy data we are injecting
+
+### Sending emails
+
+- go to email/index.tsx
+
+```ts
+
+```

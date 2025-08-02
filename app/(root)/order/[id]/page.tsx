@@ -2,7 +2,7 @@ import { getOrderByIdAction } from '@/actions/orders/getOrderByIdAction'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import OrderDetailsTable from './OrderDetailsTable'
-import { ShippingAddressType } from '@/types'
+import { PaymentResultType, ShippingAddressType } from '@/types'
 import { auth } from '@/auth'
 import Stripe from 'stripe'
 
@@ -43,6 +43,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
           order={{
             ...order,
             shippingAddress: order.shippingAddress as ShippingAddressType,
+            paymentResult: order.paymentResult as PaymentResultType,
           }}
           stripeClientSecret={client_secret}
           paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'} //sb, identifier for sando account

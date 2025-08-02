@@ -54,6 +54,7 @@ export default function OrderDetailsTable({
     isDelivered,
     paidAt,
     deliveredAt,
+    paymentResult,
   } = order
   console.log('paymentMethod :', paymentMethod)
 
