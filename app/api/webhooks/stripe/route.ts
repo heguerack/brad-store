@@ -26,22 +26,6 @@ export async function POST(req: NextRequest) {
         },
       })
 
-      const order = await getOrderByIdAction(intent.metadata.orderId)
-
-      if (order?.user?.email) {
-        console.log('📨 Sending receipt to:', order.user.email)
-
-        await sendPurchaseReceipt({
-          order: {
-            ...order,
-            shippingAddress: order.shippingAddress as ShippingAddressType,
-            paymentResult: order.paymentResult as PaymentResultType,
-          },
-        })
-      } else {
-        console.warn('⚠️ Cannot send receipt, missing email or user')
-      }
-
       return NextResponse.json({
         message: 'UpdateOrderToPaid + optional email was successful',
       })
