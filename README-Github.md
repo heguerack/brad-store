@@ -17,7 +17,7 @@ git push -u origin main
 git branch
 git checkout main
 git add .
-git commit -m "addedd dotend to files in email folder - traubleshooting"
+git commit -m "Addded webhook fro stripe again, reqrote payment file"
 git push -u origin main
 ```
 

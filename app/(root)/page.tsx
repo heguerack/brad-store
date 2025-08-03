@@ -1,6 +1,8 @@
 import getFeaturedProductsAction from '@/actions/products/getFeaturedProductsAction'
 import { getLatestProductsAction } from '@/actions/products/getLatestProductsAction'
+import DealCountdown from '@/components/shared/DealCountdown'
 import ProductCarousel from '@/components/shared/header/ProductCarousel'
+import IconBoxes from '@/components/shared/IconBoxes'
 import ProductList from '@/components/shared/product/ProductList'
 import ViewAllProductsButton from '@/components/shared/ViewAllProductsButton'
 import { ProductType } from '@/types'
@@ -25,6 +27,8 @@ export default async function page() {
       )}
       <ProductList data={products} title='Newest Arrivals' limit={6} />
       <ViewAllProductsButton />
+      <DealCountdown />
+      <IconBoxes />
     </>
   )
 }
