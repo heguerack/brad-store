@@ -17,7 +17,7 @@ git push -u origin main
 git branch
 git checkout main
 git add .
-git commit -m "finally stripe upto date"
+git commit -m "addedd dotend to files in email folder - traubleshooting"
 git push -u origin main
 ```
 

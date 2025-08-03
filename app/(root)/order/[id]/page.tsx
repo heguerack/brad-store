@@ -5,6 +5,8 @@ import OrderDetailsTable from './OrderDetailsTable'
 import { PaymentResultType, ShippingAddressType } from '@/types'
 import { auth } from '@/auth'
 import Stripe from 'stripe'
+import { updateOrderToPaid } from '@/actions/orders/updateOrderToPaidAction'
+import ForcePaymentButton from './ForcePaymentButton'
 
 export const metadata: Metadata = {
   title: `Home`,
@@ -53,6 +55,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
           // isAdmin={session?.user?.role === 'admin' ? true : false}
         />
       }
+      <ForcePaymentButton orderId={order.id} email={order.user.email} />
     </div>
   )
 }
