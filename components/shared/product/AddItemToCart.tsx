@@ -5,6 +5,7 @@ import { removeItemFromCartAction } from '@/actions/cart/removeItemFromCartActio
 import { Button } from '@/components/ui/button'
 import { CartItemType, CartType } from '@/types'
 import { Loader, Minus, Plus } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -72,33 +73,42 @@ export default function AddItemToCart({
       setGoToCart(true)
     })
   }
-  //check f item is in the cart
+  //check if item is in the cart
   const itemExist =
     cart && cart.items.find((x) => x.productId === item.productId)
   return itemExist ? (
-    <div className='flex gap-4 items-center'>
-      <Button type='button' variant={'outline'} onClick={handleRemoveItem}>
-        {/* <Minus /> */}
-        {isPending ? (
-          <Loader className='w-4 h-4 animate-spin' />
-        ) : (
-          <Minus className='w-4 h-4' />
-        )}
-      </Button>
-      <span className='px-2'>{itemExist.qty}</span>
-      <Button type='button' variant={'outline'} onClick={handleAddToCart}>
-        {isPending ? (
-          <Loader className='w-4 h-4 animate-spin' />
-        ) : (
-          <Plus className='w-4 h-4' />
-        )}
-      </Button>
+    <div className='flex flex-col gap-8'>
+      <div className='flex gap-4 items-center'>
+        <Button type='button' variant={'outline'} onClick={handleRemoveItem}>
+          {/* <Minus /> */}
+          {isPending ? (
+            <Loader className='w-4 h-4 animate-spin' />
+          ) : (
+            <Minus className='w-4 h-4' />
+          )}
+        </Button>
+        <span className='px-2'>{itemExist.qty}</span>
+        <Button type='button' variant={'outline'} onClick={handleAddToCart}>
+          {isPending ? (
+            <Loader className='w-4 h-4 animate-spin' />
+          ) : (
+            <Plus className='w-4 h-4' />
+          )}
+        </Button>
+      </div>
+      {itemExist && (
+        <Button asChild>
+          <Link href={'/cart'}> Go to cart </Link>
+        </Button>
+      )}
     </div>
   ) : (
-    <Button className='w-full ' type='button' onClick={handleAddToCart}>
-      {isPending ? <Loader className='w-4 h-4 animate-spin' /> : <Plus />} Add
-      To Cart
-    </Button>
+    <>
+      <Button className='w-full ' type='button' onClick={handleAddToCart}>
+        {isPending ? <Loader className='w-4 h-4 animate-spin' /> : <Plus />} Add
+        To Cart
+      </Button>
+    </>
   )
   // return (
   //   <div className='flex-center flex-col gap-4 '>

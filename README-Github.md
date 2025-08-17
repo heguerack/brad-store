@@ -17,7 +17,7 @@ git push -u origin main
 git branch
 git checkout main
 git add .
-git commit -m "Addded webhook fro stripe again, reqrote payment file"
+git commit -m "final commit - end of the project fopr now"
 git push -u origin main
 ```
 

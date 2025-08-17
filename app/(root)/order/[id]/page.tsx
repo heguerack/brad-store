@@ -55,7 +55,7 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
           // isAdmin={session?.user?.role === 'admin' ? true : false}
         />
       }
-      <ForcePaymentButton orderId={order.id} email={order.user.email} />
+      {/* <ForcePaymentButton orderId={order.id} email={order.user.email} /> */}
     </div>
   )
 }

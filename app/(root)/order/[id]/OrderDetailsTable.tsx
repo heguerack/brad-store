@@ -143,12 +143,12 @@ export default function OrderDetailsTable({
           <Card>
             <CardContent className='p-4 '>
               <h2 className='text-xl pb-4'>Paid at</h2>
-
               <p className=''>{paymentMethod}</p>
               {isPaid ? (
-                <Badge className=' ' variant={'secondary'}>
+                <Badge className=' ' variant={'green'}>
                   {/* PAid at {formatDateTime(paidAt!).dateTime} */}
                   Paid at {formatDateTime(paidAt).dateTime}
+                  <span></span>
                 </Badge>
               ) : (
                 <Badge className=' ' variant={'destructive'}>
@@ -176,6 +176,48 @@ export default function OrderDetailsTable({
               )}
             </CardContent>
           </Card>
+          <div className='mt-4 md:mt-0 '>
+            <Card>
+              <CardContent className='p-4 gap-4 space-y-4'>
+                <h2 className='text-xl pb-4'>Order Items</h2>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Item</TableHead>
+                      <TableHead>Quantity</TableHead>
+                      <TableHead>Price</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {OrderItems.map((item) => (
+                      <TableRow key={item.slug}>
+                        <TableCell>
+                          <Link
+                            href={`/product/${item.slug}`}
+                            className='flex items-center'>
+                            <Image
+                              src={item.image}
+                              alt=''
+                              width={50}
+                              height={50}
+                            />
+                            <span className='px-2'>{item.name}</span>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <span className='px-2'>{item.qty}</span>
+                        </TableCell>
+                        <TableCell>
+                          {' '}
+                          <span className='px-2'>${item.price}</span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
         </div>
         <div className=''>
           <Card>
@@ -236,48 +278,6 @@ export default function OrderDetailsTable({
               {/* CASH ON DELIVERY */}
               {/* CASH ON DELIVERY */}
               {/* CASH ON DELIVERY */}
-            </CardContent>
-          </Card>
-        </div>
-        <div className='mt-4 md:mt-0'>
-          <Card>
-            <CardContent className='p-4 gap-4 space-y-4'>
-              <h2 className='text-xl pb-4'>Order Items</h2>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Item</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Price</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {OrderItems.map((item) => (
-                    <TableRow key={item.slug}>
-                      <TableCell>
-                        <Link
-                          href={`/product/${item.slug}`}
-                          className='flex items-center'>
-                          <Image
-                            src={item.image}
-                            alt=''
-                            width={50}
-                            height={50}
-                          />
-                          <span className='px-2'>{item.name}</span>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <span className='px-2'>{item.qty}</span>
-                      </TableCell>
-                      <TableCell>
-                        {' '}
-                        <span className='px-2'>${item.price}</span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
             </CardContent>
           </Card>
         </div>

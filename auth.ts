@@ -16,7 +16,7 @@ type Credentials = {
 export const config = {
   pages: {
     signIn: '/sign-in',
-    error: '/signin',
+    error: '/auth/error',
   },
   session: {
     strategy: 'jwt' as const, // i added the as const when fiixng or adding the auth.config

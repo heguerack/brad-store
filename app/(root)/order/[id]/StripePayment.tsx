@@ -11,6 +11,7 @@ import { FormEvent, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { formatCurrencyHelper } from '@/helperFuntions/currencyFormatter'
 import { SERVER_URL } from '@/lib/contants'
+import CopyBox from './CopyBox'
 
 export default function StripePayment({
   priceInCents,
@@ -66,6 +67,10 @@ export default function StripePayment({
     return (
       <form className='space-y-4' onSubmit={handleSubmit}>
         <div className='text-xl'>Stripe Checkout</div>
+        <CopyBox value='4242 4242 4242 4242' />
+        <CopyBox value='12 / 34' />
+        <CopyBox value='CVC' />
+
         {errorMessage && <div className='text-destructive'>{errorMessage}</div>}
         <PaymentElement />
         {/* SECURE LINK  , this is=f they select the stripe link , so this email will help recognize returning customers*/}
@@ -98,10 +103,10 @@ export default function StripePayment({
             theme === 'dark'
               ? 'night'
               : theme === 'light'
-              ? 'stripe'
-              : systemTheme === 'light'
-              ? 'stripe'
-              : 'night',
+                ? 'stripe'
+                : systemTheme === 'light'
+                  ? 'stripe'
+                  : 'night',
         },
       }}
       stripe={stripePromise}>
