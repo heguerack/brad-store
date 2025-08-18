@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import PlaceOrderButton from './PlaceOrderButton'
 import { createOrderAction } from '@/actions/orders/createOrderAction'
-import { toast } from 'sonner'
 
 export default function PlaceOrderForm() {
   const router = useRouter()
@@ -18,6 +17,10 @@ export default function PlaceOrderForm() {
   }
   return (
     <form onSubmit={handleSubmit} className='w-full'>
+      <h5 className='mt-8'>Ready place the order formprocessing?</h5>
+      <p className='mb-8 text-red-500'>
+        You wont be able to access the cart after this
+      </p>
       <PlaceOrderButton />
     </form>
   )

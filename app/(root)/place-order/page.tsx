@@ -136,6 +136,7 @@ export default async function page() {
                   {formatCurrencyHelper(cart.totalPrice)}
                 </div>
               </div>
+
               <PlaceOrderForm />
             </CardContent>
           </Card>

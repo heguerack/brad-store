@@ -31,6 +31,7 @@ import { updateOrderToPaidCashAction } from '@/actions/orders/updateOrderToPaidC
 
 import { updateOrderToDelivered } from '@/actions/orders/updateOrderToDelivered'
 import StripePayment from './StripePayment'
+import CopyBox from './CopyBox'
 
 export default function OrderDetailsTable({
   order,
@@ -240,9 +241,26 @@ export default function OrderDetailsTable({
                   {formatCurrencyHelper(totalPrice)}
                 </div>
               </div>
+              {/* //////////////////////////////////// */}
+              {/* //////////////////////////////////// */}
+              {/* //////////////////////////////////// */}
+              {/* paypal payment  */}
               {/* paypal payment  */}
               {!isPaid && paymentMethod === 'Paypal' && (
                 <div>
+                  <div className='flex flex-col border rounded-xl p-3 mb-2 bg-black shadow-sm'>
+                    <p className=' text-gray-300 mb-4'>Email: to try it out:</p>
+                    <CopyBox
+                      type='paypal'
+                      value='sb-4kmv144195043@personal.example.com'
+                    />
+                    <p className=' text-gray-300 my-4 '>
+                      Password to try it out:{' '}
+                      <span className='bg-white text-black p-2 rounded-md'>
+                        $S%u7UIk
+                      </span>
+                    </p>
+                  </div>
                   <PayPalScriptProvider
                     options={{
                       clientId: paypalClientId,
@@ -255,6 +273,9 @@ export default function OrderDetailsTable({
                   </PayPalScriptProvider>
                 </div>
               )}
+              {/* //////////////////////////////////// */}
+              {/* //////////////////////////////////// */}
+              {/* //////////////////////////////////// */}
               {/* STRIPE PAYMENT  */}
               {/* STRIPE PAYMENT  */}
               {!isPaid && paymentMethod === 'Stripe' && stripeClientSecret && (
@@ -264,9 +285,10 @@ export default function OrderDetailsTable({
                   clientSecret={stripeClientSecret}
                 />
               )}
-
               {/* STRIPE PAYMENT  */}
               {/* STRIPE PAYMENT  */}
+              {/* //////////////////////////////////// */}
+              {/* //////////////////////////////////// */}
               {/* //////////////////////////////////// */}
               {/* CASH ON DELIVERY */}
               {/* CASH ON DELIVERY */}

@@ -7,6 +7,7 @@ import { auth } from '@/auth'
 import Stripe from 'stripe'
 import { updateOrderToPaid } from '@/actions/orders/updateOrderToPaidAction'
 import ForcePaymentButton from './ForcePaymentButton'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: `Home`,
@@ -40,6 +41,14 @@ export default async function page(props: { params: Promise<{ id: string }> }) {
 
   return (
     <div>
+      <div className=''>
+        <Link
+          href={'/user/orders'}
+          // The keyframes + animation bits go inside the tailwind.config.js  That way Tailwind knows about the new utilities (animate-breathe) and generates them.
+          className='bg-green-700 p-2 rounded-sm font-semibold text-white animate-pulse duration-6000 ease-in-out'>
+          See all orders
+        </Link>
+      </div>
       {
         <OrderDetailsTable
           order={{

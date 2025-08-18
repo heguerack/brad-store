@@ -67,13 +67,19 @@ export default function StripePayment({
     return (
       <form className='space-y-4' onSubmit={handleSubmit}>
         <div className='text-xl'>Stripe Checkout</div>
-        <CopyBox value='4242 4242 4242 4242' />
-        <CopyBox value='12 / 34' />
-        <CopyBox value='CVC' />
+        <CopyBox type='cd' value='4242 4242 4242 4242' />
+        <CopyBox type='date' value='MM / YY' />
+        <CopyBox type='zip' value='CVC' />
+
+        <div className='flex items-center justify-between border rounded-xl p-3 mb-2 bg-black shadow-sm'>
+          <p className=' text-gray-300'>
+            Feel free to copy and paste the e values from above
+          </p>
+        </div>
 
         {errorMessage && <div className='text-destructive'>{errorMessage}</div>}
         <PaymentElement />
-        {/* SECURE LINK  , this is=f they select the stripe link , so this email will help recognize returning customers*/}
+        {/* SECURE LINK  , this is if they select the stripe link , so this email will help recognize returning customers*/}
         {/* SECURE LINK   */}
         <div className=''>
           <LinkAuthenticationElement

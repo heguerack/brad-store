@@ -3,12 +3,27 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Check, Copy } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
-export default function CopyBox({ value }: { value: string }) {
+export default function CopyBox({
+  type,
+  value,
+}: {
+  type: string
+  value: string
+}) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(value === 'CVC' ? '123' : value)
+    await navigator.clipboard.writeText(
+      type === 'cd'
+        ? '4242 4242 4242 4242'
+        : type === 'date'
+          ? '12 / YY'
+          : type === 'paypal'
+            ? 'sb-4kmv144195043@personal.example.com'
+            : '123'
+    )
     setCopied(!copied)
     // setTimeout(() => setCopied(false), 5000)
   }
@@ -21,7 +36,7 @@ export default function CopyBox({ value }: { value: string }) {
           {copied && (
             <p
               onClick={handleCopy}
-              className='font-mono text-lg text-green-600'>
+              className={cn('font-mono text-lg text-green-600')}>
               {value}
             </p>
           )}
